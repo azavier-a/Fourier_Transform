@@ -92,17 +92,19 @@ int main(void) {
 	glDeleteShader(fragShader);
 
 	double cVert[1];
-	circle(cVert, 0, 0, 50);
+	//circle(cVert, 0, 0, 50);
 	
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glBindVertexArray(VAO);
 
+	/*
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(cVert), cVert, GL_DYNAMIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 3 * sizeof(double), (void*)0);
 	glEnableVertexAttribArray(0);
+	*/
 
 	glBindVertexArray(0);
 
@@ -114,7 +116,7 @@ int main(void) {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		circle(cVert, mX, mY, 10);
+		circle(cVert, 0, 0, 10);
 
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(cVert), cVert, GL_DYNAMIC_DRAW);
@@ -124,7 +126,6 @@ int main(void) {
 
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glPolygonMode(GL_FRONT, GL_LINE);
 		glDrawArrays(GL_LINE_LOOP, 0, sizeof(cVert) / 3);
 
 		glfwSwapBuffers(win);

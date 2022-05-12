@@ -11,7 +11,7 @@
 #define mapX(a) (a*2/wid - 1)
 #define mapY(a) -(a*2/hei - 1)
 
-const unsigned int dWid = 800, dHei = 800, minCircleQuality = 10, maxCircleQuality = 50;
+const unsigned int dWid = 800, dHei = 800, minCircleQuality = 10, maxCircleQuality = 50, VERTICES = 50;
 
 double mX, mY;
 int wid, hei;
@@ -23,8 +23,8 @@ const char *vertShaderSource = "#version 330 core\n"
 						       "void main() { FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f); }";
 
 void circle(double* arr, double x, double y, double r) {
-	unsigned int VERTICES = r/10 + 10; // when r = 400, VERTICES = maxCircleQuality, when r = 0, VERTICES = minCircleQuality. 10 + r/10
-	arr = new double[VERTICES * 3];
+	// unsigned int VERTICES = r/10 + 10; // when r = 400, VERTICES = maxCircleQuality, when r = 0, VERTICES = minCircleQuality. 10 + r/10
+	// arr = new double[VERTICES * 3];
 
 	if (wid == 0) r *= (2.0 / dWid);
 	else r *= (2.0 / wid);
@@ -41,11 +41,16 @@ static void keyPressed(GLFWwindow* win, int key, int scancode, int action, int m
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(win, GL_TRUE);
 }
+
 static void mousePosCallback(GLFWwindow* win, double xPos, double yPos) {
 	mX = mapX(xPos);
 	mY = mapY(yPos);
 }
-
+/*
+void input(GLFWwindow* win) {
+	if(glfwGetKey(win, GLFW_KEY_))
+}
+*/
 void framebuffersizeCallback(GLFWwindow* win, int widt, int heig) {
 	glViewport(0, 0, widt, heig);
 }
@@ -62,6 +67,7 @@ int main(void) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	win = glfwCreateWindow(dWid, dHei, "Fourier Transform.", NULL, NULL); 
 	glfwMakeContextCurrent(win);
@@ -91,20 +97,20 @@ int main(void) {
 	glDeleteShader(vertShader);
 	glDeleteShader(fragShader);
 
-	double cVert[1];
-	//circle(cVert, 0, 0, 50);
+	double cVert[VERTICES*3];
 	
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
+
 	glBindVertexArray(VAO);
 
-	/*
+	circle(cVert, mX, mY, 10);
+
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(cVert), cVert, GL_DYNAMIC_DRAW);
 
 	glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 3 * sizeof(double), (void*)0);
 	glEnableVertexAttribArray(0);
-	*/
 
 	glBindVertexArray(0);
 
@@ -116,17 +122,14 @@ int main(void) {
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		circle(cVert, 0, 0, 10);
+		circle(cVert, mX, mY, 10);
 
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(cVert), cVert, GL_DYNAMIC_DRAW);
-
-		glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 3 * sizeof(double), (void*)0);
-		glEnableVertexAttribArray(0);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(cVert), cVert);
 
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_LINE_LOOP, 0, sizeof(cVert) / 3);
+
+		glDrawArrays(GL_LINE_LOOP, 0, VERTICES);
 
 		glfwSwapBuffers(win);
 		glfwPollEvents();

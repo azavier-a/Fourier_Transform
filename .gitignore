@@ -259,3 +259,5 @@ paket-files/
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
 *.pyc
+Fourier Transform/Fourier Transform.vcxproj.filters
+Fourier Transform/Fourier Transform.vcxproj

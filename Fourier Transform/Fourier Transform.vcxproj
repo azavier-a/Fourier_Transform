@@ -70,20 +70,23 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\Downloads\Lib Builds\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Downloads\Lib Builds\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Downloads\Lib Builds\Include;C:\Users\CTEAllenA96\Downloads\Lib Builds\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Downloads\Lib Builds\Libs;C:\Users\CTEAllenA96\Downloads\Lib Builds\Libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>D:\Downloads\Lib Builds\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Downloads\Lib Builds\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Downloads\Lib Builds\Include;C:\Users\CTEAllenA96\Downloads\Lib Builds\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Downloads\Lib Builds\Libs;C:\Users\CTEAllenA96\Downloads\Lib Builds\Libs;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>D:\Downloads\Lib Builds\Include;C:\Users\CTEAllenA96\Downloads\Lib Builds\Include;$(IncludePath)</IncludePath>
     <LibraryPath>D:\Downloads\Lib Builds\Libs;C:\Users\CTEAllenA96\Downloads\Lib Builds\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>D:\Downloads\Lib Builds\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\Downloads\Lib Builds\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>D:\Downloads\Lib Builds\Include;C:\Users\CTEAllenA96\Downloads\Lib Builds\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Downloads\Lib Builds\Libs;C:\Users\CTEAllenA96\Downloads\Lib Builds\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -94,7 +97,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>D:\Downloads\Lib Builds\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Downloads\Lib Builds\Libs;C:\Users\CTEAllenA96\Downloads\Lib Builds\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -104,7 +107,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\CTEAllenA96\Downloads\Lib Builds\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\CTEAllenA96\Downloads\Lib Builds\Include;D:\Downloads\Lib Builds\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -125,7 +128,7 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\Downloads\Lib Builds\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Downloads\Lib Builds\Libs;C:\Users\CTEAllenA96\Downloads\Lib Builds\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -142,12 +145,12 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>D:\Downloads\Lib Builds\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>D:\Downloads\Lib Builds\Libs;C:\Users\CTEAllenA96\Downloads\Lib Builds\Libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>opengl32.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="C:\Users\CTEAllenA96\Downloads\Lib Builds\Libs\glad.c" />
+    <ClCompile Include="D:\Downloads\Lib Builds\Libs\glad.c" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

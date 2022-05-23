@@ -268,3 +268,4 @@ Fourier Transform/Fourier Transform.vcxproj.filters
 *.pyc
 >>>>>>> parent of 4401295 (Git Ignore)
 *.vcxproj
+*.filters

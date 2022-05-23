@@ -258,14 +258,16 @@ paket-files/
 
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
-<<<<<<< HEAD
 *.pyc
 Fourier Transform/Fourier Transform.vcxproj.filters
 Fourier Transform/Fourier Transform.vcxproj
 Fourier Transform/Fourier Transform.vcxproj
 Fourier Transform/Fourier Transform.vcxproj.filters
+<<<<<<< HEAD
 =======
 *.pyc
 >>>>>>> parent of 4401295 (Git Ignore)
 *.vcxproj
 *.filters
+=======
+>>>>>>> parent of f4375d4 (Revert "Merge branch 'master' of https://github.com/ApolloTeddy/Fourier_Transform")

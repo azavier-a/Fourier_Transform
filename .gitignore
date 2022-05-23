@@ -258,8 +258,13 @@ paket-files/
 
 # Python Tools for Visual Studio (PTVS)
 __pycache__/
+<<<<<<< HEAD
 *.pyc
 Fourier Transform/Fourier Transform.vcxproj.filters
 Fourier Transform/Fourier Transform.vcxproj
 Fourier Transform/Fourier Transform.vcxproj
 Fourier Transform/Fourier Transform.vcxproj.filters
+=======
+*.pyc
+>>>>>>> parent of 4401295 (Git Ignore)
+*.vcxproj

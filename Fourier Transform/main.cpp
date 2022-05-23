@@ -2,19 +2,20 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "Eyad.h"
+#include "VertexBuffer.h"
+#include "IndexBuffer.h"
+
 #define _USE_MATH_DEFINES
 #include <cmath>
-#include <string>
 
-#include <iostream>
+#include <string>
 
 #define TAU (M_PI*2)
 #define mapX(a) (a*2/wid - 1)
 #define mapY(a) -(a*2/hei - 1)
 
-typedef unsigned int uint;
-
-const uint wid = 800, hei = 800, minCircleQuality = 10, maxCircleQuality = 50, VERTICES = 50;
+const unsigned int wid = 800, hei = 800, minCircleQuality = 10, maxCircleQuality = 50, VERTICES = 50;
 
 double mX, mY;
 
@@ -58,14 +59,14 @@ static void mousePosCallback(GLFWwindow* win, double xPos, double yPos) {
 }
 
 void framebuffersizeCallback(GLFWwindow* win, int widt, int heig) {
-	glViewport(0, 0, widt, heig);
+	call(glViewport(0, 0, widt, heig));
 }
 
 void init() {
-	glViewport(0, 0, wid, hei);
+	call(glViewport(0, 0, wid, hei));
 }
 
-static std::string compareShaderType(uint type) {
+static std::string compareShaderType(unsigned int type) {
 	switch (type) {
 	case GL_VERTEX_SHADER:
 		return "vertex";
@@ -78,28 +79,28 @@ static std::string compareShaderType(uint type) {
 	}
 }
 
-static uint compileShader(const std::string& source, uint type) {
+static unsigned int compileShader(const std::string& source, unsigned int type) {
 	uint id = glCreateShader(type);
 	const char* src = source.c_str();
 
-	glShaderSource(id, 1, &src, nullptr);
-	glCompileShader(id);
+	call(glShaderSource(id, 1, &src, nullptr));
+	call(glCompileShader(id));
 
 	// Errror handling.
 	int r;
-	glGetShaderiv(id, GL_COMPILE_STATUS, &r);
+	call(glGetShaderiv(id, GL_COMPILE_STATUS, &r));
 	if (r == GL_FALSE) {
 		int l;
-		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &l);
+		call(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &l));
 
 		char* message = (char*)alloca(l * sizeof(char));
 
-		glGetShaderInfoLog(id, l, &l, message);
+		call(glGetShaderInfoLog(id, l, &l, message));
 
 		std::cout << "Failed to compile " << compareShaderType(type) << " shader:" << std::endl;
 		std::cout << message << std::endl;
 
-		glDeleteShader(id);
+		call(glDeleteShader(id));
 		exit(EXIT_FAILURE);
 	}
 
@@ -111,15 +112,15 @@ static int c_shaderProgram(const std::string& vertShdr, const std::string& fragS
 		 frag = compileShader(fragShdr, GL_FRAGMENT_SHADER),
 		 prog = glCreateProgram();
 
-	glAttachShader(prog, vert);
-	glAttachShader(prog, frag);
+	call(glAttachShader(prog, vert));
+	call(glAttachShader(prog, frag));
 
-	glLinkProgram(prog);
+	call(glLinkProgram(prog));
 
-	glValidateProgram(prog);
+	call(glValidateProgram(prog));
 
-	glDeleteShader(vert);
-	glDeleteShader(frag);
+	call(glDeleteShader(vert));
+	call(glDeleteShader(frag));
 
 	return prog;
 }
@@ -144,46 +145,53 @@ int main(void) {
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) exit(EXIT_FAILURE);
 
-	uint shaderProgram = c_shaderProgram(vertShaderSource, fragShaderSource),
-   	     VBO, VAO;
+	unsigned int shaderProgram = c_shaderProgram(vertShaderSource, fragShaderSource),
+   				 VAO;
 
 	double cVert[VERTICES*2];
-	
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
 
-	glBindVertexArray(VAO);
+	VertexArray va;
+	VertexBuffer VBO(cVert, VERTICES * 2 * sizeof(double), GL_DYNAMIC_DRAW);
+	va.AddBuffer(VBO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, VERTICES * 3 * sizeof(double), 0, GL_DYNAMIC_DRAW);
+	BufferLayout layout;
+	layout.Push<double>(VERTICES);
+	va.AddLayout(layout);
 
-	glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, 2 * sizeof(double), 0);
-	glEnableVertexAttribArray(0);
+	VBO.Bind();
 
-	glBindVertexArray(0);
+	call(glGenVertexArrays(1, &VAO));
+
+	call(glBindVertexArray(VAO));
+
+	call(glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, 2 * sizeof(double), 0));
+	call(glEnableVertexAttribArray(0));
+
+	call(glBindVertexArray(0));
 
 	init();
 
-	glUseProgram(shaderProgram);
+	call(glUseProgram(shaderProgram));
 
 	int loc = glGetUniformLocation(shaderProgram, "u_Color");
 
-	glUniform4f(loc, 1.0f, 0.0f, 0.0f, 1.0f);
+	call(glUniform4f(loc, 1.0f, 0.0f, 0.0f, 1.0f));
 
 	double r = 10;
 	while (!glfwWindowShouldClose(win)) {
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		call(glClearColor(0.2f, 0.3f, 0.3f, 1.0f));
+		call(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-		glUniform4f(loc, abs(mX), abs(mY), (mX + mY)/2.0f, 1.0f);
+		call(glUniform4f(loc, abs(mX), abs(mY), (mX + mY)/2.0f, 1.0f));
 
 		circle(cVert, mX, mY, r);
 
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(cVert), cVert);
+		call(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(cVert), cVert));
 
-		glBindVertexArray(VAO);
+		call(glBindVertexArray(VAO));
+		va.Bind();
 
-		glDrawArrays(GL_LINE_LOOP, 0, VERTICES);
+		call(glDrawArrays(GL_LINE_LOOP, 0, VERTICES));
 
 		glfwSwapBuffers(win);
 		glfwPollEvents();
@@ -192,9 +200,8 @@ int main(void) {
 		if (r > 60) r = 10;
  	}
 
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteProgram(shaderProgram);
+	call(glDeleteVertexArrays(1, &VAO));
+	call(glDeleteProgram(shaderProgram));
 	glfwDestroyWindow(win);
 	glfwTerminate();
 	exit(EXIT_SUCCESS);

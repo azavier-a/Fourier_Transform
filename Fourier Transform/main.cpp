@@ -2,14 +2,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Eyad.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-
 #define _USE_MATH_DEFINES
 #include <cmath>
 
+#include "IndexBuffer.h"
+#include "VertexArray.h"
+
 #include <string>
+#include <iostream>
 
 #define TAU (M_PI*2)
 #define mapX(a) (a*2/wid - 1)
@@ -18,7 +18,6 @@
 const unsigned int wid = 800, hei = 800, minCircleQuality = 10, maxCircleQuality = 50, VERTICES = 50;
 
 double mX, mY;
-
 
 const char *vertShaderSource = R"glsl(
 							    #version 330 core
@@ -62,10 +61,6 @@ void framebuffersizeCallback(GLFWwindow* win, int widt, int heig) {
 	call(glViewport(0, 0, widt, heig));
 }
 
-void init() {
-	call(glViewport(0, 0, wid, hei));
-}
-
 static std::string compareShaderType(unsigned int type) {
 	switch (type) {
 	case GL_VERTEX_SHADER:
@@ -80,7 +75,7 @@ static std::string compareShaderType(unsigned int type) {
 }
 
 static unsigned int compileShader(const std::string& source, unsigned int type) {
-	uint id = glCreateShader(type);
+	unsigned int id = glCreateShader(type);
 	const char* src = source.c_str();
 
 	call(glShaderSource(id, 1, &src, nullptr));
@@ -108,9 +103,9 @@ static unsigned int compileShader(const std::string& source, unsigned int type) 
 }
 
 static int c_shaderProgram(const std::string& vertShdr, const std::string& fragShdr) {
-	uint vert = compileShader(vertShdr, GL_VERTEX_SHADER),
-		 frag = compileShader(fragShdr, GL_FRAGMENT_SHADER),
-		 prog = glCreateProgram();
+	unsigned int vert = compileShader(vertShdr, GL_VERTEX_SHADER),
+				 frag = compileShader(fragShdr, GL_FRAGMENT_SHADER),
+				 prog = glCreateProgram();
 
 	call(glAttachShader(prog, vert));
 	call(glAttachShader(prog, frag));
@@ -145,31 +140,16 @@ int main(void) {
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) exit(EXIT_FAILURE);
 
-	unsigned int shaderProgram = c_shaderProgram(vertShaderSource, fragShaderSource),
-   				 VAO;
+	unsigned int shaderProgram = c_shaderProgram(vertShaderSource, fragShaderSource);
 
 	double cVert[VERTICES*2];
 
 	VertexArray va;
 	VertexBuffer VBO(cVert, VERTICES * 2 * sizeof(double), GL_DYNAMIC_DRAW);
-	va.AddBuffer(VBO);
+	VertexBufferLayout layout;
 
-	BufferLayout layout;
-	layout.Push<double>(VERTICES);
-	va.AddLayout(layout);
-
-	VBO.Bind();
-
-	call(glGenVertexArrays(1, &VAO));
-
-	call(glBindVertexArray(VAO));
-
-	call(glVertexAttribPointer(0, 2, GL_DOUBLE, GL_FALSE, 2 * sizeof(double), 0));
-	call(glEnableVertexAttribArray(0));
-
-	call(glBindVertexArray(0));
-
-	init();
+	layout.Push<double>(2);
+	va.AddBuffer(VBO, layout);
 
 	call(glUseProgram(shaderProgram));
 
@@ -188,7 +168,6 @@ int main(void) {
 
 		call(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(cVert), cVert));
 
-		call(glBindVertexArray(VAO));
 		va.Bind();
 
 		call(glDrawArrays(GL_LINE_LOOP, 0, VERTICES));
@@ -200,7 +179,6 @@ int main(void) {
 		if (r > 60) r = 10;
  	}
 
-	call(glDeleteVertexArrays(1, &VAO));
 	call(glDeleteProgram(shaderProgram));
 	glfwDestroyWindow(win);
 	glfwTerminate();

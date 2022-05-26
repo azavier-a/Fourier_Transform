@@ -33,18 +33,45 @@ const char *vertShaderSource = R"glsl(
 									color = u_Color; 
 								} )glsl";
 
-void circle(double* arr, double x, double y, double r) {
-	// unsigned int VERTICES = r/10 + 10; // when r = 400, VERTICES = maxCircleQuality, when r = 0, VERTICES = minCircleQuality. 10 + r/10
-	// arr = new double[VERTICES * 3];
+static VertexBufferLayout clay;
+
+/*
+	double cVert[VERTICES*2];
+
+	VertexArray va;
+	VertexBuffer VBO(cVert, VERTICES * 2 * sizeof(double), GL_DYNAMIC_DRAW);
+
+	va.AddBuffer(VBO, layout);
+
+	VertexBufferLayout layout;
+	layout.Push<double>(2);
+
+	*/
+
+void circle(double x, double y, double r) {
+	unsigned int VERTICES = r/10 + 10, double_count = VERTICES * 2; // when r = 400, VERTICES = maxCircleQuality, when r = 0, VERTICES = minCircleQuality. 10 + r/10
+	std::vector<double> vertPos(double_count);
 
 	r *= (2.0 / wid);
 
 	for (int v = 0; v <= VERTICES; v++) {
 		double t = v * TAU / VERTICES;
 
-		arr[v * 2] = x + r * cos(t);
-		arr[v * 2 + 1] = y + r * sin(t);
+		vertPos[v * 2] = x + r * cos(t);
+		vertPos[v * 2 + 1] = y + r * sin(t);
 	}
+
+	VertexArray va;
+	double* tmp = new double[vertPos.size()];
+	//std::copy(vertPos.begin(), vertPos.end(), tmp);
+	VertexBuffer vb(tmp, double_count * sizeof(double), GL_STATIC_DRAW);
+	
+	va.AddBuffer(vb, clay);
+
+	call(glDrawArrays(GL_LINE_LOOP, 0, VERTICES));
+	va.Unbind();
+	vb.Unbind();
+	//delete[] tmp;
 }
 
 static void keyPressed(GLFWwindow* win, int key, int scancode, int action, int mods) {
@@ -76,7 +103,7 @@ static std::string compareShaderType(unsigned int type) {
 
 static unsigned int compileShader(const std::string& source, unsigned int type) {
 	unsigned int id = glCreateShader(type);
-	const char* src = source.c_str();
+	const char *src = source.c_str();
 
 	call(glShaderSource(id, 1, &src, nullptr));
 	call(glCompileShader(id));
@@ -121,7 +148,8 @@ static int c_shaderProgram(const std::string& vertShdr, const std::string& fragS
 }
 
 int main(void) {
-	GLFWwindow* win;
+	GLFWwindow *win;
+	clay.Push<double>(2);
 
 	if (!glfwInit()) exit(EXIT_FAILURE);
 
@@ -142,14 +170,7 @@ int main(void) {
 
 	unsigned int shaderProgram = c_shaderProgram(vertShaderSource, fragShaderSource);
 
-	double cVert[VERTICES*2];
-
-	VertexArray va;
-	VertexBuffer VBO(cVert, VERTICES * 2 * sizeof(double), GL_DYNAMIC_DRAW);
-	VertexBufferLayout layout;
-
-	layout.Push<double>(2);
-	va.AddBuffer(VBO, layout);
+	
 
 	call(glUseProgram(shaderProgram));
 
@@ -163,14 +184,13 @@ int main(void) {
 		call(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		call(glUniform4f(loc, abs(mX), abs(mY), (mX + mY)/2.0f, 1.0f));
+		circle(mX, mY, r);
 
-		circle(cVert, mX, mY, r);
+		//call(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(cVert), cVert));
 
-		call(glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(cVert), cVert));
+		//va.Bind();
 
-		va.Bind();
-
-		call(glDrawArrays(GL_LINE_LOOP, 0, VERTICES));
+		//call(glDrawArrays(GL_LINE_LOOP, 0, VERTICES));
 
 		glfwSwapBuffers(win);
 		glfwPollEvents();
